@@ -2,8 +2,9 @@ const express  = require('express');
 const axios = require('axios');
 const app = express()
 const client = require('./redis')
+const rateLimiter = require('./limitation/rateLimiter')
 
-
+app.use('/api/', rateLimiter);
 
 app.get('/', (req, res) => {
     res.send('Hello, World!')
@@ -103,6 +104,7 @@ app.get('/product', async(req, res) => {
 //     console.error('Error:', err);
 //   });
 
+
 // async function main() {
 // const hashName = 'user:1000';
 
@@ -137,3 +139,7 @@ app.get('/product', async(req, res) => {
 app.listen(8080,()=>{
     console.log('listening on port 8080')
 })
+
+
+
+
