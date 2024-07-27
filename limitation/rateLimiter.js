@@ -1,15 +1,17 @@
-// server/middlewares/rateLimiter.js
-const { useTokens } = require('./tokenBucket');
+const { waitForTokens } = require('./tokenBucket');
 
 const rateLimiter = (req, res, next) => {
   const key = `rate_limit:${req.ip}`;
-  
-  useTokens(key, 1) // Example: require 1 token per request
+  const maxWaitTime = 2000; // Maximum wait time of 5 seconds
+  console.log('came in ratelimiter')
+  waitForTokens(key, 1, maxWaitTime) // Example: require 1 token per request
     .then((allowed) => {
       if (allowed) {
+        console.log('have token ')
         next();
       } else {
-        res.status(429).json({ message: 'Rate limit exceeded' });
+        console.log('limit exceeded')
+        res.status(429).json({ message: 'Rate limit exceeded. Please try again later.' });
       }
     })
     .catch((err) => {
@@ -19,6 +21,7 @@ const rateLimiter = (req, res, next) => {
 };
 
 module.exports = rateLimiter;
+
 
 
 
