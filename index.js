@@ -3,6 +3,8 @@ const axios = require('axios');
 const app = express()
 const client = require('./redis')
 const rateLimiter = require('./limitation/rateLimiter')
+// const Redis = require('ioredis')
+// const redis = new Redis()
 
 app.use('/api/', rateLimiter);
 
@@ -14,13 +16,26 @@ app.use('/api/', rateLimiter);
 
 
 
-app.get('/', (req, res) => {
-    console.log('Incoming request IP:', req.ip);
-    const first = req.headers['x-forwarded-for']
-const second = req.connection.remoteAddress
-   console.log('first',first)
-console.log('second',second)
-    res.send('User data!')
+app.get('/', async(req, res) => {
+    // console.log('Incoming request IP:', req.ip);
+    // const first = req.headers['x-forwarded-for']
+    // console.log('first',first)
+
+    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress.slice(0,9)
+    console.log('ip',ip)
+
+    const request = await client.incr(ip)
+    console.log(request,' number of request ')
+
+    if(request === 1){
+        await client.expire(ip,60)
+    }
+
+    if(request > 10){
+        return res.status(503).json({message:'To many request'})
+    }
+
+     res.status(200).json({message:'request successful'})
 })
 
 // app.get('/api/payment', (req, res) => {
