@@ -27,14 +27,19 @@ app.get('/', async(req, res) => {
     const request = await client.incr(ip)
     console.log(request,' number of request ')
 
+    let ttl
     if(request === 1){
-        await client.expire(ip,60)
+       await client.expire(ip,60)
+       ttl=60
+    }else {
+        ttl = await client.ttl(ip)
     }
 
-    if(request > 10){
+    if(request > 5){
+    console.log(ttl,'time taken')
         return res.status(503).json({message:'To many request'})
     }
-
+    console.log(ttl,'time taken')
      res.status(200).json({message:'request successful'})
 })
 
