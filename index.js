@@ -21,19 +21,7 @@ app.get('/', async(req, res) => {
     // const first = req.headers['x-forwarded-for']
     // console.log('first',first)
 
-    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress.slice(0,9)
-    console.log('ip',ip)
-
-    const request = await client.incr(ip)
-    console.log(request,' number of request ')
-
-    let ttl
-    if(request === 1){
-       await client.expire(ip,60)
-       ttl=60
-    }else {
-        ttl = await client.ttl(ip)
-    }
+   
 
     if(request > 5){
     console.log(ttl,'time taken')
