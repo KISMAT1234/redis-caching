@@ -3,33 +3,30 @@ const axios = require('axios');
 const app = express()
 const client = require('./redis')
 const rateLimiter = require('./limitation/rateLimiter')
-// const Redis = require('ioredis')
-// const redis = new Redis()
+const apiLimiter = require('./api-limiting');
+
 
 app.use('/api/', rateLimiter);
 
-// app.get('/', (req, res) => {
-//     res.send('Hello, World!')
-// })
 
-
-
-
-
-app.get('/', async(req, res) => {
+app.get('/', apiLimiter({seconds: 60, allowedHits: 4}), async(req, res) => {
     // console.log('Incoming request IP:', req.ip);
     // const first = req.headers['x-forwarded-for']
     // console.log('first',first)
 
-   
 
-    if(request > 5){
-    console.log(ttl,'time taken')
-        return res.status(503).json({message:'To many request'})
-    }
-    console.log(ttl,'time taken')
+    // console.log(ttl,'time taken')
      res.status(200).json({message:'request successful'})
 })
+
+app.listen(8080,()=>{
+    console.log('listening on port 8080')
+})
+
+
+
+
+
 
 // app.get('/api/payment', (req, res) => {
 //     res.send('product data!')
@@ -127,9 +124,7 @@ app.get('/', async(req, res) => {
 //     console.error('Error:', err);
 //   });
 
-app.listen(8080,()=>{
-    console.log('listening on port 8080')
-})
+
 
 
 
