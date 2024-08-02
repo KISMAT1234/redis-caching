@@ -25,13 +25,11 @@ export class Order {
         this.products = this.products.filter(product => product.id.toString()!== productsId);
     }
 
-    calculatePricing(){
-
-    }
+   
     generateInvoice(){
-
+       console.log('generated invoice ')
     }
     processPayment(){
-        
+        console.log('processing payment')
     }
 }
