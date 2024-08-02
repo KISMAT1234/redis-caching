@@ -36,8 +36,8 @@ const string = async() => {
         // const increment = await client.incrBy("medal",4) 
         // console.log(increment,'increment')
 
-        const decrement = await client.decrBy("medal",5) 
-        console.log(decrement,'decrement')
+        // const decrement = await client.decrBy("medal",5) 
+        // console.log(decrement,'decrement')
 
         
     }
